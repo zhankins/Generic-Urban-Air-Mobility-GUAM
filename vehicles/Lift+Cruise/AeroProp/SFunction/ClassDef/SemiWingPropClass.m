@@ -758,20 +758,37 @@ classdef SemiWingPropClass %#codegen
         Myi_ub = [dMyi_df dMyi_da dMyi_di];
         Mzi_ub = [dMzi_df dMzi_da dMzi_di];
 
-        % add in the derivative of the Thrust with the change in state
-        obj.Fx_x = sum(Fxi_x); % 1 x 6
-        obj.Fy_x = sum(Fyi_x);
-        obj.Fz_x = sum(Fzi_x);
-        obj.Mx_x = sum(Mxi_x);
-        obj.My_x = sum(Myi_x);
-        obj.Mz_x = sum(Mzi_x);
+        % % OLD CODE, commented for testing purpose when using a single
+        % strip per wing
+        % % add in the derivative of the Thrust with the change in state
+        % obj.Fx_x = sum(Fxi_x); % 1 x 6
+        % obj.Fy_x = sum(Fyi_x);
+        % obj.Fz_x = sum(Fzi_x);
+        % obj.Mx_x = sum(Mxi_x);
+        % obj.My_x = sum(Myi_x);
+        % obj.Mz_x = sum(Mzi_x);
+        % 
+        % obj.Fx_u(1,obj.NP+1:end) = sum(Fxi_ub); % 1 x 3
+        % obj.Fy_u(1,obj.NP+1:end) = sum(Fyi_ub);
+        % obj.Fz_u(1,obj.NP+1:end) = sum(Fzi_ub);
+        % obj.Mx_u(1,obj.NP+1:end) = sum(Mxi_ub);
+        % obj.My_u(1,obj.NP+1:end) = sum(Myi_ub);
+        % obj.Mz_u(1,obj.NP+1:end) = sum(Mzi_ub);
 
-        obj.Fx_u(1,obj.NP+1:end) = sum(Fxi_ub); % 1 x 3
-        obj.Fy_u(1,obj.NP+1:end) = sum(Fyi_ub);
-        obj.Fz_u(1,obj.NP+1:end) = sum(Fzi_ub);
-        obj.Mx_u(1,obj.NP+1:end) = sum(Mxi_ub);
-        obj.My_u(1,obj.NP+1:end) = sum(Myi_ub);
-        obj.Mz_u(1,obj.NP+1:end) = sum(Mzi_ub);
+        % add in the derivative of the Thrust with the change in state
+        obj.Fx_x = sum(Fxi_x, 1); % 1 x 6
+        obj.Fy_x = sum(Fyi_x, 1);
+        obj.Fz_x = sum(Fzi_x, 1);
+        obj.Mx_x = sum(Mxi_x, 1);
+        obj.My_x = sum(Myi_x, 1);
+        obj.Mz_x = sum(Mzi_x, 1);
+        
+        obj.Fx_u(1,obj.NP+1:end) = sum(Fxi_ub, 1); % 1 x 3
+        obj.Fy_u(1,obj.NP+1:end) = sum(Fyi_ub, 1);
+        obj.Fz_u(1,obj.NP+1:end) = sum(Fzi_ub, 1);
+        obj.Mx_u(1,obj.NP+1:end) = sum(Mxi_ub, 1);
+        obj.My_u(1,obj.NP+1:end) = sum(Myi_ub, 1);
+        obj.Mz_u(1,obj.NP+1:end) = sum(Mzi_ub, 1);
 
       end
 
