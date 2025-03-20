@@ -61,7 +61,7 @@ userStruct.variants:
     eomType: Simple
     sensorType: None
 ```
-For detailed instructions on setting each option, reference input types, customizing the aero-propulsive model, and other aspects, please see the [Personalization Guide]().
+For detailed instructions on setting each option, reference input types, customizing the aero-propulsive model, and other aspects, please see the [Personalization Guide](Documentation/Personalize.md).
 
 ### Simulation Trimming
 The (**offline**) trim routines are found in the `./vehicles/Lift+Cruise/Trim` folder. The top-level trim routine is: `trim_helix.m`. This script was used to trim the overactuated Lift+Cruise vehicle using the polynomial aero-propulsive database. NOTE: the routine could also be used for trimming with the strip theory S-function aero-propulsive model, but the code has not been modified to switch between the models (likely not functional using the S-function model). In the top-level `trim_helix.m` script, the user specifies a range of forward and vertical velocities (could also provide a turn radius). Next, the user provides some quantities needed for the quadratic cost function/optimization (e.g., initial guess, offset, scaling, and free variables). The quadratic cost function used by `fmincon` is: `mycost.m`, and the non-linear constraints function is `nlinCon_helix.m`. The results of the trim table schedule are then saved in a `.mat` file.
