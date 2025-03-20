@@ -19,12 +19,16 @@
 
 % *********************** User Input **************************************
 close all;
-%DataFname       = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\Exec_Scripts\Hover2CruiseSimOut.mat'; % Input SimOut filename or ''
-DataFname       = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\Exec_Scripts\Cruise_Climb_Turn_traj.mat'; % Input SimOut filename or ''
-VideoOutFname   = '.\Cruise_Climb_Turn_traj.avi'; % Desired filename of output video
+scriptdir = matlab.desktop.editor.getActiveFilename;
+[mainpath] = fileparts(fileparts(scriptdir));
 
-% User String to put in movie title
-TitStr          ='Demo Video of RUNME: Cruise Climb Turn,'; % User String to put in movie title
+%DataFname       = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\Exec_Scripts\Hover2CruiseSimOut.mat'; % Input SimOut filename or ''
+% DataFname       = string(fullfile(mainpath,'Exec_Scripts','Trajectory.mat')); % Input SimOut filename or ''
+DataFname = '';
+VideoOutFname   = '.\LastSimulation.avi'; % Desired filename of output video
+
+% User String to put in movie titleBUS
+TitStr          ='Flown Trajectory,'; % User String to put in movie title
 
 % Specify desired start/stop simulation times to display in .avi movie
 t_start         = 0; % Specify simulation time to start .avi movie
@@ -34,10 +38,11 @@ base_acSize     = 60; % Rough size of plotted (stationary) a/c in ft
 des_scale       = 0.20; % Desired scale size of aircraft in plot (factor used to keep aircraft size visible in long trajectories)
 
 % Set surface annotation location [x y w h]
+annotationFlag = true;
 annot_loc = [0.05 0.01 0.3 0.3];
 
 % Video frame rate (e.g., 50 frames/sec), should be integer multiple of simulation rate
-FrameRate       = 30; % Desired frames/sec in video
+FrameRate       = 60; % Desired frames/sec in video
 FR_factor       = 5; % Frame rate scale factor (speed up video), e.g., FR_factor=2; => one second of realtime in video corresponds to 2 secs in simulation time
 
 % set Matlab view command az and elev offsets
@@ -53,7 +58,7 @@ if ~isempty(DataFname)
     load(DataFname); % Load in SimOut data from a previously saved run
 else
     % Create SimOut variable (after simulation execution) from logsout{1} logged data
-    SimOut = logsout{1}; % Assign the logged simulation output to SimOut
+    SimOut = logsout{1}.Values; % Assign the logged simulation output to SimOut
 end
 
 % Check if tiltwing class object exists, otherwise create it (reqd for draw methods)
@@ -108,8 +113,10 @@ for ind = tStart_ind:step_int*FR_factor:tEnd_ind
     tiltwing = tiltwing.aero(rho, vb_bIi, om, 1);
 
     % Delete text annotation if it exist
-    if first_pass_flag
-        delete(a_hand)
+    if annotationFlag
+        if first_pass_flag
+            delete(a_hand)
+        end
     end
 
     % Delete the last aircraft object
@@ -122,9 +129,9 @@ for ind = tStart_ind:step_int*FR_factor:tEnd_ind
             set(TraceHand,'YData', [TraceHand.YData SimOut.Vehicle.EOM.InertialData.Pos_bii.Data(ind,2)]);
             set(TraceHand,'ZData', [TraceHand.ZData SimOut.Vehicle.EOM.InertialData.Pos_bii.Data(ind,3)]);
             % Update trace for desired trajectory
-            set(DesTrajHand,'XData', [DesTrajHand.XData SimOut.RefInputs.pos_des.Data(ind, 1)]);
-            set(DesTrajHand,'YData', [DesTrajHand.YData SimOut.RefInputs.pos_des.Data(ind, 2)]);
-            set(DesTrajHand,'ZData', [DesTrajHand.ZData SimOut.RefInputs.pos_des.Data(ind, 3)]);
+            % set(DesTrajHand,'XData', [DesTrajHand.XData SimOut.RefInputs.pos_des.Data(ind, 1)]);
+            % set(DesTrajHand,'YData', [DesTrajHand.YData SimOut.RefInputs.pos_des.Data(ind, 2)]);
+            % set(DesTrajHand,'ZData', [DesTrajHand.ZData SimOut.RefInputs.pos_des.Data(ind, 3)]);
         end
     else
         TraceHand = plot3(SimOut.Vehicle.EOM.InertialData.Pos_bii.Data(ind,1), SimOut.Vehicle.EOM.InertialData.Pos_bii.Data(ind,2),...
@@ -159,17 +166,20 @@ for ind = tStart_ind:step_int*FR_factor:tEnd_ind
     Scale_Obj = makehgtform('scale', obj_scale);
     % Now translate, scale and rotate the object
     set(tObj,'Matrix', Tr_Obj*Scale_Obj*Rotz_Obj*Roty_Obj*Rotx_Obj*Rot_Init);
-    sur_str = sprintf('Flap: %4.2f (deg)\nAil: %4.2f (deg)\nElev: %4.2f (deg)\nRud: %4.2f (deg)',(SimOut.Vehicle.SurfAct.Position.Data(ind,1) + SimOut.Vehicle.SurfAct.Position.Data(ind,2))/2*180/pi, ...
-        (SimOut.Vehicle.SurfAct.Position.Data(ind,1)-(SimOut.Vehicle.SurfAct.Position.Data(ind,1) + SimOut.Vehicle.SurfAct.Position.Data(ind,2))/2)*180/pi,...
-        SimOut.Vehicle.SurfAct.Position.Data(ind,3)*180/pi, SimOut.Vehicle.SurfAct.Position.Data(ind,5)*180/pi);
-    a_hand = annotation('textbox',annot_loc, 'String', sur_str, 'FitBoxToText','on','color','red');
+    if annotationFlag
+        sur_str = sprintf('Flap: %4.2f (deg)\nAil: %4.2f (deg)\nElev: %4.2f (deg)\nRud: %4.2f (deg)',(SimOut.Vehicle.SurfAct.Position.Data(ind,1) + SimOut.Vehicle.SurfAct.Position.Data(ind,2))/2*180/pi, ...
+            (SimOut.Vehicle.SurfAct.Position.Data(ind,1)-(SimOut.Vehicle.SurfAct.Position.Data(ind,1) + SimOut.Vehicle.SurfAct.Position.Data(ind,2))/2)*180/pi,...
+            SimOut.Vehicle.SurfAct.Position.Data(ind,3)*180/pi, SimOut.Vehicle.SurfAct.Position.Data(ind,5)*180/pi);
+        a_hand = annotation('textbox',annot_loc,'String', sur_str,'FitBoxToText','on','Color','red');
+    end
 
     % Update the view based on aircraft heading (e.g., chase plane view)
     az_deg = -SimOut.Vehicle.EOM.WorldRelativeData.Euler.psi.Data(ind)*180/pi + az_offset;
     view(az_deg,el_offset)
 
     title(sprintf('%s Time:%5.2f', TitStr, SimOut.Time.Data(ind)));
-    legend('As Flown Traj','Desired Traj','Location', 'southoutside');
+    % legend('As Flown Traj','Desired Traj','Location', 'southoutside');
+    legend('As Flown Traj','Location', 'southoutside');
 
     drawnow;
     frame = getframe(gcf);
