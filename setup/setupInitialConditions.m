@@ -99,13 +99,13 @@ end
 IC.GrndAltMSL = 0; % (ft) MSL altitude of ground.
 
 % Psuedo-States: Used to initialize EOM
-%IC.LatGeod  = 37.0881*deg;  % Latitude (deg)
-%IC.Lon      = -76.3448*deg; % Longitude (deg)
-%IC.AltMSL   = 0.0*ft;       % (ft) Altitude above Mean Sea Level
+IC.LatGeod  = 37.0881*deg;  % Latitude (deg)
+IC.Lon      = -76.3448*deg; % Longitude (deg)
+IC.AltMSL   = 0.0*ft;       % (ft) Altitude above Mean Sea Level
 
-IC.LatGeod  = RefInputs.initialLat; % Latitude (rad)
-IC.Lon      = RefInputs.initialLon; % Longitude (rad)
-IC.AltMSL   = RefInputs.initialAlt;  % (ft) Altitude above Mean Sea Level
+% IC.LatGeod  = RefInputs.initialLat; % Latitude (rad)
+% IC.Lon      = RefInputs.initialLon; % Longitude (rad)
+% IC.AltMSL   = RefInputs.initialAlt;  % (ft) Altitude above Mean Sea Level
 
 IC.Vgrnd    = Vtas;         % (ft/s) Velocity reletive to ground (typically over written by trim) 
 IC.Accel    = 0*ft/s^2;     % (ft/s^2) Linear Acceleration
