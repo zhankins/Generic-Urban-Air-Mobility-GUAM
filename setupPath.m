@@ -10,6 +10,7 @@ setenv("GVSActiveRootDir", pwd);
 % add path for libs, utilities, etc
 % path(genpath('AutoCodeModels'), path);
 path(genpath('ClassDef'), path);
+path(genpath('Controller'), path);
 path(genpath('Environment'), path);
 addpath ./lib;
 
