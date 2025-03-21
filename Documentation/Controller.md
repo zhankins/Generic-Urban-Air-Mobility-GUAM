@@ -1,5 +1,5 @@
 # Controller and Linearization
-## Baseline Controller
+## NASA's Baseline Controller
 The baseline controller is designed to manage control inputs and state feedback for stable flight operations. The key matrices used for this purpose are:
 - **Ki, Kx, Kv, F, C**: Matrices used for control and state feedback, calculated using interpolation or extrapolation based on control frame velocities `u` and `w`.
 	- **Kv** for longitudinal control is **K_theta**
