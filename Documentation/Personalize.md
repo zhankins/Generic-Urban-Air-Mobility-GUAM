@@ -154,6 +154,9 @@ The customization of the aircraft is managed in the `build_Lift_plus_Cruise.m` f
 > [!NOTE]
 > The `setup.m` file at the '/home/adcl/Documents/MATLAB/Generic-Urban-Air-Mobility-GUAM-main/vehicles/Lift+Cruise/' directory is overriding the num of engines and surfaces established in the `build_Lift_plus_Cruise.m` file.
 
+> [!IMPORTANT]
+> For instructions on how to compile the SFunction after making changes, please refer to the [SFunction Documentation](./SFunction.md).
+
 ## Trajectory and basic flight manuevers Customization
 Users have a few options to provide desired trajectories and basic flight maneuvers to execute. The `userStruct.variant.refInputType` option selects (look in the Lift+Cruise Reference Inputs variant subsystem block at the simulation top level) between: 
 - `FOUR_RAMP`

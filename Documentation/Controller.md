@@ -84,8 +84,9 @@ for i=1:25
 end
 ```
 
-## Linearization
-The gain scheduling m-files are contained in the `./vehicles/Lift+Cruise/control/` folder. The top-level script for gain scheduling the baseline controller (LSQi) is `ctrl_scheduler_GUAM.m`. This script schedules the Longitudinal and Lateral axes separately. A few linearization scripts are available but the main script is `get_lin_dynamics_heading.m`. This script linearizes around a designated flight condition, and other scripts (e.g., `get_lat_dynamics_heading.m` and `ctrl_lat.m`) segregate the linearized dynamics according to desired axes.
+### Linearization
+
+For detailed information on the linearization process, refer to the [Linearization Documentation](./Linearization.md). This file provides an explanation of how the the main linearization function `get_lin_dynamics_heading.m` work.
 
 ## External References
 For further reading on the EOMs, envelope, baseline controller design, and analysis, check out the following resources:
