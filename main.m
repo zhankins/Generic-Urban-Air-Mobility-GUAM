@@ -18,6 +18,8 @@ userStruct.switches.AeroPropDeriv = 1; % 1 or 0
 % target = struct('tas', 0, 'gndtrack', 0,'stopTime', 30);
 PW_Bezier_flag = 0; % Flag to denote failure of PW Bezier setup
 
+kts2fts = 1852.0/(0.3048*3600);
+
 % First create the example trajectory (simple liftoff in hover and transition to fwd flight):
 % pos in ft, vel in ft/sec, and acc in ft/sec^2
 % wptsX = [0 200 0; 2000 200 0; 16000 200 0]; % within row = pos vel acc, rows are waypoints
