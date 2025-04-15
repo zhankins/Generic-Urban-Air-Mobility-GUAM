@@ -9,7 +9,7 @@ end
 model = 'GUAM';
 
 userStruct.variants.fmType = 1; % 1=SFunction, 2=Polynomial
-userStruct.variants.actType = 1; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
+userStruct.variants.actType = 4; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
 userStruct.variants.refInputType = 4; % 1=FOUR_RAMP, 2=ONE_RAMP, 3=Timeseries, 4=Piecewise Bezier, 5=Default(doublets)
 
 userStruct.switches.AeroPropDeriv = 1; % 1 or 0
