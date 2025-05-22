@@ -5,11 +5,22 @@ if ~exist("userStruct",'var')
     addpath('./Bez_Functions/');
 end
 
+%% network parameters
+
+simAddress = '127.0.0.1';
+simPortInput = 5502; % Port used for the simulator to send data
+simPortOutput = 5501; % Port used for the simulator to receive data
+
+headsetAddress = '127.0.0.1';
+headsetPortHUD = 25000;
+headsetPortTraj = 25001;
+
 %% sim parameters
 model = 'GUAM';
 
 userStruct.variants.fmType = 1; % 1=SFunction, 2=Polynomial
 userStruct.variants.actType = 4; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
+userStruct.variants.propType = 2; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
 userStruct.variants.refInputType = 4; % 1=FOUR_RAMP, 2=ONE_RAMP, 3=Timeseries, 4=Piecewise Bezier, 5=Default(doublets)
 
 userStruct.switches.AeroPropDeriv = 1; % 1 or 0
@@ -22,19 +33,19 @@ kts2fts = 1852.0/(0.3048*3600);
 
 % First create the example trajectory (simple liftoff in hover and transition to fwd flight):
 % pos in ft, vel in ft/sec, and acc in ft/sec^2
-% wptsX = [0 200 0; 2000 200 0; 16000 200 0]; % within row = pos vel acc, rows are waypoints
-% time_wptsX = [0 10 80];
-% wptsY = [0 0 0; 0 0 0; 0 0 0]; % within row = pos vel acc, rows are waypoints
-% time_wptsY = [0 10 80];
-% wptsZ = [-580 0 0; -580 0 0;-580 0 0]; % within row = pos vel acc, rows are waypoints, NOTE: NED frame -z is up...
-% time_wptsZ = [0 20 80];
-
-wptsX = [0 0 0; 0 0 0; 1750 50 0]; % within row = pos vel acc, rows are waypoints
+wptsX = [0 120*kts2fts 0; 2000 200 0; 16000 200 0]; % within row = pos vel acc, rows are waypoints
 time_wptsX = [0 10 80];
-wptsY = [0 0 0; 0 0 0]; % within row = pos vel acc, rows are waypoints
-time_wptsY = [0 80];
-wptsZ = [0 0 0; -80 -500/60 0;-580 -500/60 0]; % within row = pos vel acc, rows are waypoints, NOTE: NED frame -z is up...
+wptsY = [0 0 0; 0 0 0; 0 0 0]; % within row = pos vel acc, rows are waypoints
+time_wptsY = [0 10 80];
+wptsZ = [-1000 0 0; -580 0 0;-580 0 0]; % within row = pos vel acc, rows are waypoints, NOTE: NED frame -z is up...
 time_wptsZ = [0 20 80];
+
+% wptsX = [0 0 0; 0 0 0; 1750 50 0]; % within row = pos vel acc, rows are waypoints
+% time_wptsX = [0 10 80];
+% wptsY = [0 0 0; 0 0 0]; % within row = pos vel acc, rows are waypoints
+% time_wptsY = [0 80];
+% wptsZ = [0 0 0; -80 -500/60 0;-580 -500/60 0]; % within row = pos vel acc, rows are waypoints, NOTE: NED frame -z is up...
+% time_wptsZ = [0 20 80];
 
 
 % NOTE each axis is handled seperately and can have different number of rows (waypoints and times), 
@@ -56,9 +67,9 @@ target.RefInput.Bezier.time_wpts = {time_wptsX time_wptsY time_wptsZ};
 clear wptsX wptsY wptsZ time_wptsX time_wptsY time_wptsZ 
 userStruct.trajFile = ''; % Delete user specified PW Bezier file
 
-%% Prepare to run simulation
-% set initial conditions and add trajectory to SimInput
-simSetup;
+%% Start the simulation
+
+SimIn.stopTime = 120;
 open(model);
 
 % % Execute the model
