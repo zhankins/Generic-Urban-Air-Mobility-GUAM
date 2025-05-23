@@ -10,6 +10,7 @@ end
 simAddress = '127.0.0.1';
 simPortInput = 5502; % Port used for the simulator to send data
 simPortOutput = 5501; % Port used for the simulator to receive data
+simIsRemote = ~strcmp(simAddress, '127.0.0.1');
 
 headsetAddress = '127.0.0.1';
 headsetPortHUD = 25000;
