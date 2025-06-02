@@ -22,7 +22,7 @@ function Out = setupTurbulence(SimIn)
   Out.WindAt5kft           = 00;    % m/s
   Out.WindDirectionAt5kft  = 0 ;    % deg CW from North
   Out.dT                   = 0.005; %  must be a fixed step and match simulation time step 
-  %Out.IntensityLevel       = 1;    %  Turbulence Intensity 1=Light, 2= Moderate, 3 =Severe  <-gain on RMS
+  Out.IntensityLevel       = int32(SimIn.turbType); %  Turbulence Intensity 1=Off, 2=light, 3=moderate, 4=severe  <-gain on RMS
 
   Out.MeanWindGain         = 33;   %  gain 0-100 % factor applied to MEAN WIND 
                                    %  ( MeanWindGain scales the Mean Wind down ) 
