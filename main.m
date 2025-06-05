@@ -57,6 +57,8 @@ clear wptsX wptsY wptsZ time_wptsX time_wptsY time_wptsZ
 userStruct.trajFile = ''; % Delete user specified PW Bezier file
 
 %% start the simulation
+% set initial conditions
+simSetup;
 
 SimIn.stopTime = 1000;
 open(model);
