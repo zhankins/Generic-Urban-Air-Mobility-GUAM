@@ -3,3 +3,5 @@ slprj/
 *.avi
 *.asv
 vehicles/Lift+Cruise/obj/LpC_wrapper_sfunc.mexa64
+codegen/
+vehicles/Lift+Cruise/AeroProp/SFunction/PropCoef/APCSF_10x4p7_scaled_coef.mat
