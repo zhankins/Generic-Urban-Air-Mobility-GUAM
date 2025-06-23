@@ -1,5 +1,12 @@
+%% Save old scale
 clc; close all; clearvars;
+try
+    oldscale = userStruct.variants.scaling; % Grab old scale for scale change detection
+catch
+    oldscale = 0;
+end
 
+%% Initialize
 addpath('./Exec_Scripts/');
 if ~exist("userStruct",'var')
     addpath('./Bez_Functions/');
@@ -19,6 +26,7 @@ headsetPortTraj = 25001;
 %% sim parameters
 model = 'GUAM';
 
+userStruct.variants.scaling = 1; % Scaling factor w.r.t the original VTOL
 userStruct.variants.fmType = 1; % 1=SFunction, 2=Polynomial
 userStruct.variants.actType = 4; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
 userStruct.variants.propType = 2; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
@@ -69,3 +77,8 @@ open(model);
 % simPlots_GUAM;
 % % Create an animation of the flight
 % Animate_SimOut;
+
+%% Scale Change Detection
+if oldscale ~= userStruct.variants.scaling
+    mex_LpC_sfunc(false)
+end

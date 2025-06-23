@@ -1,4 +1,4 @@
-function [tiltwing] = build_Lift_plus_Cruise()
+function [tiltwing] = build_Lift_plus_Cruise(scaling_factor)
 % Tiltwing Aircraft Build Script
 %
 
@@ -30,24 +30,27 @@ function [tiltwing] = build_Lift_plus_Cruise()
 % See Lift+Cruise configuration, NDARC model files for Turbo-electric variant
 % Ref. [1] list-cruiseTE6.list
 % Ref. [2] lift-cruiseTE6.xlsv
+% 2/21/25: John Clardy, added scaling factor
+%% Define Scaling Factor
+% scaling_factor = .25;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fuselage 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % See NDARC file: lift-cruiseTE6.list and lift-cruiseTE6.xlsx
 % mass of fuselage
-m_b = 15.294862; % See Ref. [2] cell B16
+m_b = 15.294862*scaling_factor^3; % See Ref. [2] cell B16
 % moment of inertia of fuselage
-Ib = diag([74.788921	460.34866	451.179883]); % See Ref. [2] cell F16-H16
+Ib = diag([74.788921	460.34866	451.179883]*scaling_factor^5); % See Ref. [2] cell F16-H16
 
 % body center of mass in the body frame
-body_cm_b = [-9; 0; -4.25]; % Ref. [1] line 1060
+body_cm_b = [-9; 0; -4.25]*scaling_factor; % Ref. [1] line 1060
 % cross sectional area
-S_b = 42.07; % See Ref. [1] line 161
+S_b = 42.07*scaling_factor^2; % See Ref. [1] line 161
 % planform area
-S_p =  172.69; % planform area See Ref. [1] lines 157 and 158 (product of length and width)
+S_p =  172.69*scaling_factor^2; % planform area See Ref. [1] lines 157 and 158 (product of length and width)
 % wetted area
-S_s =368.851; % wetted area, See Ref. [1] line 160
+S_s =368.851*scaling_factor^2; % wetted area, See Ref. [1] line 160
 % fineness factor, length/max diameter
 f_ld = 29.93/6.13; % fineness factor, length/max diameter  See Ref[1] lines 157 & 158
 
@@ -70,18 +73,18 @@ wing_airfoil = load('naca633618.dat');
 % wing aerodynamic coefficients
 wing_aero_coeff = load('NACA_0015_pp.mat'); % loaded data is a structure already
 % wing span and exposed wing span
-b = 47.5;   % See Ref. [1] line 451
-b_e = 47.5; % See Ref. [1] line 451
+b = 47.5*scaling_factor;   % See Ref. [1] line 451
+b_e = 47.5*scaling_factor; % See Ref. [1] line 451
 % chord length
-c = [6.34513 3.000]; % Created using Ref. [1] wing definition (lines 443-479)
+c = [6.34513 3.000]*scaling_factor; % Created using Ref. [1] wing definition (lines 443-479)
 % dihedral
 gamma = -2*pi/180; % Created using Ref. [1] wing definition (lines 443-479)
 % mass
-m_w = 12.044978; % See Ref. [2] cell B56
+m_w = 12.044978*scaling_factor^3; % See Ref. [2] cell B56
 % moment of inertia
-Iw = diag([1608.52513	12.672535	1618.725065]); % See Ref. [2] cell F56-H56
+Iw = diag([1608.52513	12.672535	1618.725065]*scaling_factor^5); % See Ref. [2] cell F56-H56
 % wing center of mass in the body frame
-w_cm_b = [-10.69; 0.000; -8.5]; % Ref. [1] line 1080
+w_cm_b = [-10.69; 0.000; -8.5]*scaling_factor; % Ref. [1] line 1080
 % wing quarter chord location in the body frame
 c4_b = w_cm_b;
 
@@ -119,10 +122,10 @@ airfoil_t = load('n0012.dat');
 % aerodynamic coefficients
 
 % span and exposed span
-b_ht      = 10.3328; % See Ref. [1], estimated as area (line 291) divided by mean cord (see below)
-b_e_ht    = 10.3328;
+b_ht      = 10.3328*scaling_factor; % See Ref. [1], estimated as area (line 291) divided by mean cord (see below)
+b_e_ht    = 10.3328*scaling_factor;
 % chord 
-c_ht      = [3.00 1.80]; % Chosen for this application
+c_ht      = [3.00 1.80]*scaling_factor; % Chosen for this application
 % dihedral
 gamma = 0.0; % See Ref. [1] line 494
 % elevator location
@@ -130,13 +133,13 @@ y_flap    = [0.0 1.0]*b_ht/2; % Whole span elevator
 % set the aileron to zero
 y_aileron = [0 0]; % No aileron on HT
 % h. tail center of mass in the body frame
-ht_cm_b   = [ -29.1; 0.000; -8.01]; % Ref. [1] line 1081
+ht_cm_b   = [ -29.1; 0.000; -8.01]*scaling_factor; % Ref. [1] line 1081
 % h. tail quarter chord location in the body frame
 ht_c4_b   = ht_cm_b;
 % mass of h. tail
-m_ht      = 2.262387; % See Ref. [2] cell B57
+m_ht      = 2.262387*scaling_factor^3; % See Ref. [2] cell B57
 % inertia matrix
-Iht       = diag([3.473351 8.689178 5.338722]); % See Ref. [2] cells F57-H57
+Iht       = diag([3.473351 8.689178 5.338722]*scaling_factor^5); % See Ref. [2] cells F57-H57
 
 %% Build the horizontal tail %%
 hTail = WingClass( airfoil_t, ...
@@ -154,15 +157,15 @@ hTail = WingClass( airfoil_t, ...
 %% Vertical Tail %%
 
 % span 
-b_vt     = 4.97524; % Selected for this configuration
+b_vt     = 4.97524*scaling_factor; % Selected for this configuration
 % chord
-c_vt     = [8.5 2.32902]; % Selected for this configuration
+c_vt     = [8.5 2.32902]*scaling_factor; % Selected for this configuration
 % v. tail quarter chord location in the body frame
-vt_c4_b  = [-28.35; 0.00; -10.3]; % see Ref. [1] line 1082
+vt_c4_b  = [-28.35; 0.00; -10.3]*scaling_factor; % see Ref. [1] line 1082
 % mass of v. tail
-m_vt     = 0.68167; % See Ref. [2] cell B58
+m_vt     = 0.68167*scaling_factor^3; % See Ref. [2] cell B58
 % inertia matrix
-Ivt      = diag([5.209589 0.228829 5.430544]); % See Ref[2] cells F58-H58
+Ivt      = diag([5.209589 0.228829 5.430544]*scaling_factor^5); % See Ref[2] cells F58-H58
 % v. tail center of mass in the body frame
 vt_cm_b  = vt_c4_b;
 % rudder location
@@ -190,34 +193,35 @@ Tail = TailClass(hTail, vTail);
 NP = 9; % See Ref. [1]
 
 % diameter of each propellers. See Ref. [1] for each rotor radius...
-D = [10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 9.0];
+D = [10.0 10.0 10.0 10.0 10.0 10.0 10.0 10.0 9.0]*scaling_factor;
 
 % Note: NDARC has different rotor numbering scheme for rotors 1-8
 % propeller location in the body frame % See Ref. [1] lines 1062-1078
 p_b = [ -5.07,  -4.63, -4.63, -5.07,  -19.2,  -18.76,-18.76,-19.2,  -31.94;
        -18.750, -8.45,  8.45, 18.750, -18.750, -8.45,  8.45, 18.750,  0.000;
-        -6.73,  -7.04, -7.04, -6.73,   -9.01,  -9.3,  -9.3,  -9.01,  -7.79];
+        -6.73,  -7.04, -7.04, -6.73,   -9.01,  -9.3,  -9.3,  -9.01,  -7.79]*scaling_factor;
 % motor location in the body frame % See Ref. [1] lines 1062-1079
 m_b =[  -5.07,  -4.63, -4.63, -5.07,  -19.2,  -18.76,-18.76,-19.2,  -31.94;
        -18.750, -8.45,  8.45, 18.750, -18.750, -8.45,  8.45, 18.750,  0.000;
-        -7.60,  -6.04, -6.04, -7.6,   -8.00,  -8.3,  -8.3,  -8.00,  -7.79];
+        -7.60,  -6.04, -6.04, -7.6,   -8.00,  -8.3,  -8.3,  -8.00,  -7.79]*scaling_factor;
 
 % propeller performance coefficients
-prop_coefs = load('APCSF_10x4p7_coef.mat'); % Selected for this configuration
+scale_prop_coef_10x4p7(scaling_factor);
+prop_coefs = load('APCSF_10x4p7_scaled_coef.mat'); % Selected for this configuration
 
 % propeller spin direction
 prop_spin = [ +1 -1  +1 -1 -1 +1 -1 +1 +1];
 
 % motor mass
 % See Ref. [2] computed as avg (Ex. fpor Rotor mass 1: B17+B18+B37+B38) for all 1-8 rotors
-rotor_mass            = 2.66855138; % slugs 
-rotor_drive_sys_mass  = 0.70223; % slugs See Ref. [2] cells B128-B135 
-rotor_engine_mass     = 1.00984; % slugs See Ref. [2] cells B138-B145
+rotor_mass            = 2.66855138*scaling_factor^3; % slugs 
+rotor_drive_sys_mass  = 0.70223*scaling_factor^3; % slugs See Ref. [2] cells B128-B135 
+rotor_engine_mass     = 1.00984*scaling_factor^3; % slugs See Ref. [2] cells B138-B145
 rotor_asbly_mass = rotor_mass + rotor_drive_sys_mass + rotor_engine_mass;
 
-pusher_mass           = 2.129713; % slugs See Ref. [2], sum cells B33+B54+B55
-pusher_drive_sys_mass = 2.289138; % slugs See Ref. [2] cell B136
-pusher_engine_mass    = 3.31803; % slugs See Ref. [2] cell B146
+pusher_mass           = 2.129713*scaling_factor^3; % slugs See Ref. [2], sum cells B33+B54+B55
+pusher_drive_sys_mass = 2.289138*scaling_factor^3; % slugs See Ref. [2] cell B136
+pusher_engine_mass    = 3.31803*scaling_factor^3; % slugs See Ref. [2] cell B146
 pusher_asbly_mass = pusher_mass + pusher_drive_sys_mass + pusher_engine_mass;
 
 m_m = [repmat(rotor_asbly_mass,1,8)  pusher_asbly_mass];
@@ -231,7 +235,7 @@ p_T_e = [ 0,  0.000,  0.000,  0,  0,  0.000,  0.000,  0, 1;
 % build and array of props
 Prop = cell(NP,1);
 for ii = 1:NP
-  prop = PropellerClass( prop_coefs.APCSF_10x4p7_coef,...
+  prop = PropellerClass( prop_coefs.APCSF_10x4p7_scaled_coef,...
                          prop_spin(ii),...
                          D(ii), ...
                          p_b(:,ii), ...
@@ -248,69 +252,69 @@ end
 
 % Pusher Prop Engine 
 % mass
-pusher_drive_sys_mass = 1.7809;
-pusher_eng_mass = 13.5389;
+pusher_drive_sys_mass = 1.7809*scaling_factor^3;
+pusher_eng_mass = 13.5389*scaling_factor^3;
 pusher_eng_asbly_mass = pusher_drive_sys_mass + pusher_eng_mass;
 % inertia matrix
-pusher_eng_I = diag([0.000 0.000 0.000]);
+pusher_eng_I = diag([0.000 0.000 0.000]*scaling_factor^5);
 % location in the body frame
 pusher_eng_cm_b = [ -30.94;
                       0.00;
-                     -7.79];
+                     -7.79]*scaling_factor;
 Pusher_Eng = MassClass(pusher_eng_asbly_mass, pusher_eng_I, pusher_eng_cm_b);
 
 % Pusher Prop Generator
 % mass
-pusher_gen_mass = 4.2643;
+pusher_gen_mass = 4.2643*scaling_factor^3;
 % inertia matrix
-pusher_gen_I = diag([0.000 0.000 0.000]);
+pusher_gen_I = diag([0.000 0.000 0.000]*scaling_factor^5);
 % location in the body frame
 pusher_gen_cm_b = [ -30.94;
                       0.00;
-                     -7.79];
+                     -7.79]*scaling_factor;
 Pusher_Gen = MassClass(pusher_gen_mass, pusher_gen_I, pusher_gen_cm_b);
 
 % Landing Gear  
 % mass
-landing_gear_mass = 8.48397; % See Ref. [2] cells B59-B61
+landing_gear_mass = 8.48397*scaling_factor^3; % See Ref. [2] cells B59-B61
 % inertia matrix
-landing_gear_I = diag([0.000 0.000 0.000]);
+landing_gear_I = diag([0.000 0.000 0.000]*scaling_factor^5);
 % location in the body frame
-landing_gear_cm_b = [-13.32464336	-3.0924E-06	-1.391179415]; % See Ref. [2], computed gear CM using cells B59-E61 & B122=E124
+landing_gear_cm_b = [-13.32464336	-3.0924E-06	-1.391179415]*scaling_factor; % See Ref. [2], computed gear CM using cells B59-E61 & B122=E124
 Landing_Gear = MassClass(landing_gear_mass, landing_gear_I, landing_gear_cm_b);
 
 % Fuel Tank 1
 % mass
-fuel_tank_1_mass = 7.9325; % See Ref. [2], sum cells B35+B36
-fuel_liq_1_mass = 0.0;
+fuel_tank_1_mass = 7.9325*scaling_factor^3; % See Ref. [2], sum cells B35+B36
+fuel_liq_1_mass = 0.0*scaling_factor^3;
 fuel_1_mass = fuel_tank_1_mass + fuel_liq_1_mass;
 % inertia matrix
-fuel_1_I = diag([0.000 0.000 0.000]);
+fuel_1_I = diag([0.000 0.000 0.000]*scaling_factor^5);
 % location in the body frame
-fuel_1_cm_b = [-12.773578 ; 0.00; -3.130658]; % See Ref. [2] cells C35-E36
+fuel_1_cm_b = [-12.773578 ; 0.00; -3.130658]*scaling_factor; % See Ref. [2] cells C35-E36
 Fuel_1 = MassClass(fuel_1_mass, fuel_1_I, fuel_1_cm_b);
 
 % Fuel Tank 2
 % mass
-fuel_tank_2_mass = 1.899172; % See Ref. [2] cell B127
-fuel_liq_2_mass = 0.0;
+fuel_tank_2_mass = 1.899172*scaling_factor^3; % See Ref. [2] cell B127
+fuel_liq_2_mass = 0.0*scaling_factor^3;
 fuel_2_mass = fuel_tank_2_mass + fuel_liq_2_mass;
 % inertia matrix
-fuel_2_I = diag([0.000 0.000 0.000]);
+fuel_2_I = diag([0.000 0.000 0.000]*scaling_factor^5);
 % location in the body frame
-fuel_2_cm_b = [-2.75; 0.00; -4.15]; % See Ref. [2] cell C127-E127
+fuel_2_cm_b = [-2.75; 0.00; -4.15]*scaling_factor; % See Ref. [2] cell C127-E127
 Fuel_2 = MassClass(fuel_2_mass, fuel_2_I, fuel_2_cm_b);
 
 % Systems
-sys_mass = 16.223758; % See Ref. [2] cell B126
-sys_I = diag([0 0 0]);
-sys_cm_b = [ -16; 0; -6]; % See Ref. [2] cells C126-E126
+sys_mass = 16.223758*scaling_factor^3; % See Ref. [2] cell B126
+sys_I = diag([0 0 0]*scaling_factor^5);
+sys_cm_b = [ -16; 0; -6]*scaling_factor; % See Ref. [2] cells C126-E126
 Sys = MassClass(sys_mass, sys_I, sys_cm_b);
 
 % Systems
-ext_mass = 54.60; % Remainder of mass (Estimated)
-ext_I = diag([0 0 0]);
-ext_cm_b = [ -7.6; 0; -0.5]; % Notional location (Estimated)
+ext_mass = 54.60*scaling_factor^3; % Remainder of mass (Estimated)
+ext_I = diag([0 0 0]*scaling_factor^5);
+ext_cm_b = [ -7.6; 0; -0.5]*scaling_factor; % Notional location (Estimated)
 Ext = MassClass(ext_mass, ext_I, ext_cm_b);
 
 Extra_Mass = {Pusher_Eng Pusher_Gen Landing_Gear Fuel_1 Fuel_2 Sys Ext};

@@ -29,10 +29,10 @@ libfile = sprintf('%s/LpC_wrapper.%s', libdir, libext);
 
 outdir = fullfile(pwd,'vehicles','Lift+Cruise','obj');
 
-srcfile = './vehicles/Lift+Cruise/AeroProp/SFunction/codegen_sfunc/LpC_Edison.c';
+srcfile = './vehicles/Lift+Cruise/AeroProp/SFunction/codegen_sfunc/LpC_wrapper_sfunc.c';
 
 %mex(ipath, libpath, libs, '-outdir', outdir, srcfile);
 %mex(ipath, libpath, '-outdir', outdir, srcfile, libfile);
-mex('-v','COMPFLAGS="$COMPFLAGS /MT"', ipath, libpath, '-outdir', outdir, srcfile, libfile, '-output','LpC_Edison');
+mex('-v','COMPFLAGS="$COMPFLAGS /MT"', ipath, libpath, '-outdir', outdir, srcfile, libfile, '-output','LpC_wrapper_sfunc');
 
 end

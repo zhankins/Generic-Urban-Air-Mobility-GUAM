@@ -114,7 +114,7 @@ else
 end
 
 % once all choices are selected, run setup
-SimIn = setup(SimIn, target);  % standard simulation mode
+SimIn = setup(SimIn, userStruct.variants, target);  % standard simulation mode
 %SimIn = setup(SimIn, target, true);  % release simulation mode
 
 % Setup Parameters
