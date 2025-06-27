@@ -103,7 +103,7 @@ if POLY
   SimIn.numEngines = 9;
   lpc = LpC_model_parameters(SimIn);
 else
-  lpc = build_Lift_plus_Cruise();
+  lpc = build_Lift_plus_Cruise(userStruct.variants.scaling);
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

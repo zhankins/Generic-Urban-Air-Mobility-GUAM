@@ -63,7 +63,7 @@ end
 
 % Check if tiltwing class object exists, otherwise create it (reqd for draw methods)
 if ~exist('tiltwing','var')
-    tiltwing = build_Lift_plus_Cruise;
+    tiltwing = build_Lift_plus_Cruise(userStruct.variants.scaling);
 end
 % *************************************************************************
 

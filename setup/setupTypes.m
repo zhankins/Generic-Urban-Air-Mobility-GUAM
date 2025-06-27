@@ -4,6 +4,17 @@ function [Out, vs] = setupTypes(SimIn, variantStruct)
     variantStruct struct = []
   end
 
+  % select scaling value
+  if isfield(variantStruct, 'scaling')
+    s = variantStruct.scaling;
+    if ~(s > 0 || s == -1)
+      error('Invalid scaling factor: must be –1 (default) or a positive number.');
+    end
+  else
+    s = -1;   % flag to use default NASA model
+  end
+  SimIn.ScalingFactor = s;
+
   % select experiment
   if isfield(variantStruct,'expType')
     m = enumeration('ExperimentEnum');

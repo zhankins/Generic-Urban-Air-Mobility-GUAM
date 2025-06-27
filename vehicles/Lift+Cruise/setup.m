@@ -1,7 +1,6 @@
-function Out = setup(SimIn, variants, target, releaseMode)
+function Out = setup(SimIn, target, releaseMode)
   arguments
     SimIn struct
-    variants struct;
     target struct = [];
     releaseMode logical = false;
   end
@@ -15,13 +14,20 @@ function Out = setup(SimIn, variants, target, releaseMode)
   switch SimIn.fmType
     case 'SFunction'
       % Build model of the lift+cruise aircraft
+      rawScale = SimIn.ScalingFactor;
+      if rawScale > 0
+        buildScale = rawScale;
+      else
+        buildScale = 1;      % no geometric change if –1 or any negative
+      end
+
       if releaseMode == false
         disp('Standard Mode');
-        SimIn.Model = build_Lift_plus_Cruise(variants.scaling);
+        SimIn.Model = build_Lift_plus_Cruise(buildScale);
       else
         disp('Release Mode');
         % Modification: no changes with release mode
-        SimIn.Model = build_Lift_plus_Cruise(variants.scaling);
+        SimIn.Model = build_Lift_plus_Cruise(buildScale);
       end
       %   CModel = common model parameters
       SimIn.CModel = LpC_model_parameters(SimIn); 
