@@ -1,10 +1,10 @@
 %% Save old scale
-clc; close all; clearvars;
 try
     oldscale = userStruct.variants.scaling; % Grab old scale for scale change detection
 catch
     oldscale = 0;
 end
+clc; close all; clearvars -except oldscale;
 
 %% Initialize
 addpath('./Exec_Scripts/');
@@ -15,6 +15,7 @@ end
 %% network parameters
 
 simAddress = '127.0.0.1';
+% simAddress = '192.168.1.4';
 simPortInput = 5502; % Port used for the simulator to send data
 simPortOutput = 5501; % Port used for the simulator to receive data
 simIsRemote = ~strcmp(simAddress, '127.0.0.1');
@@ -26,7 +27,7 @@ headsetPortTraj = 25001;
 %% sim parameters
 model = 'GUAM';
 
-userStruct.variants.scaling = 1; % Scaling factor w.r.t the original VTOL
+userStruct.variants.scaling = 0.5; % Scaling factor w.r.t the original VTOL
 userStruct.variants.fmType = 1; % 1=SFunction, 2=Polynomial
 userStruct.variants.actType = 4; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
 userStruct.variants.propType = 2; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
@@ -43,11 +44,11 @@ kts2fts = 1852.0/(0.3048*3600);
 
 % First setup initial conditions:
 % pos in ft, vel in ft/sec, and acc in ft/sec^2
-wptsX = [0 120*kts2fts 0; 2000 200 0]; % within row = pos vel acc
+wptsX = [0 0*kts2fts 0; 2000 200 0]; % within row = pos vel acc
 time_wptsX = [0 10];
 wptsY = [0 0 0; 0 0 0]; % within row = pos vel acc
 time_wptsY = [0 10];
-wptsZ = [-1000 0 0; -580 0 0]; % within row = pos vel acc, NOTE: NED frame -z is up...
+wptsZ = [0 0 0; -580 0 0]; % within row = pos vel acc, NOTE: NED frame -z is up...
 time_wptsZ = [0 20];
 
 % Set desired Initial condition vars
@@ -67,9 +68,22 @@ userStruct.trajFile = ''; % Delete user specified PW Bezier file
 %% start the simulation
 % set initial conditions
 simSetup;
+open(model);
+
+if SimIn.ScalingFactor > 0
+    % generate the scaled trim table
+    trimFname = Trim_Case_7_Scale_x(SimIn);
+    SimIn.trimFile = trimFname;
+
+    % re-setup the sim
+    simSetup;
+
+    % compile the new S-Function
+    mex_LpC_sfunc(false);
+    setupSFunction(SimIn,model);
+end
 
 SimIn.stopTime = 1000;
-open(model);
 
 % % Execute the model
 % sim(model);
@@ -77,8 +91,3 @@ open(model);
 % simPlots_GUAM;
 % % Create an animation of the flight
 % Animate_SimOut;
-
-%% Scale Change Detection
-if oldscale ~= userStruct.variants.scaling
-    mex_LpC_sfunc(false)
-end
