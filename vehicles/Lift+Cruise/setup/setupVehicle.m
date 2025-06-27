@@ -18,8 +18,12 @@ end
 % default stop time from reference trajectory
 if SimIn.refInputType == RefInputEnum.TIMESERIES 
     stopTime = SimIn.RefInputs.trajectory.refTime(end);
-elseif SimIn.refInputType == RefInputEnum.BEZIER 
-    stopTime = SimIn.RefInputs.Bezier.time_wpts{1}(end);
+elseif SimIn.refInputType == RefInputEnum.BEZIER
+    t = SimIn.RefInputs.Bezier.time_wpts;
+    if iscell(t)
+        t = t{1};         % extract the numeric vector from the cell
+    end
+    stopTime = t(end);
 end
 
 % check for any target overrides
@@ -49,7 +53,11 @@ end
 if SimIn.refInputType == RefInputEnum.TIMESERIES
     SimIn.startTime = SimIn.RefInputs.trajectory.refTime(1);  % zero-based time value, not trajectory time
 elseif SimIn.refInputType == RefInputEnum.BEZIER
-    SimIn.startTime = SimIn.RefInputs.Bezier.time_wpts{1}(1);
+    t = SimIn.RefInputs.Bezier.time_wpts;
+    if iscell(t)
+        t = t{1};         % extract the numeric vector from the cell
+    end
+    SimIn.startTime = t(1);
 else
     SimIn.startTime = 0;
 end
