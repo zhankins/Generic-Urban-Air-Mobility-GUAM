@@ -157,11 +157,15 @@ else
   LPC.del_r     = del(4);
 
   % calulate aircraft aero
-  if nargout >2
-    [F M] = LPC.aero(RHO, vb, om, 0);
-  else
-      [F M] = LPC.aero(RHO, vb, om, 0);
-  end
+  LPC = LPC.aero(RHO, vb, om, 1);
+
+  F = LPC.total_Fb();
+  M = LPC.total_Mb();
+  % if nargout >2
+  %   [F M] = LPC.aero(RHO, vb, om, 0);
+  % else
+  %     [F M] = LPC.aero(RHO, vb, om, 0);
+  % end
 
 end
 %fprintf('[%f %f %f]\n', F(1), F(2), F(3));
