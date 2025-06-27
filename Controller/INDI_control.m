@@ -19,15 +19,19 @@ function [G, v, uMin, uMax, duMin, duMax, Wv, Wu, u_d, du_d] = INDI_control(FM_u
     Vz_dot_o = observed(4);
     V_dot_o = observed(5);
 
-    om_prop_curr     = u_curr(1:9);
+    om_prop_curr = u_curr(1:9);
     delta_curr = u_curr(10:end);
 
     om_prop_hi = limits(1, 1:9)';
     om_prop_lo = limits(2, 1:9)';
     surf_hi    = limits(1, 10:end)';
     surf_lo    = limits(2, 10:end)';
-    ompdot_max = limits(3,1:9)';
-    deldot_max = 0.5.*limits(3,10:end)';
+    ompdot_max = (100/limits(3,1))*limits(3,1:9)'; % Scale it to 230rad/s
+    deldot_max = (7/limits(3,10)).*limits(3,10:end)'; % Scale it to 7rad/s
+    % The rate of the control surface must be close to x3wn of the model
+    % reference that way the control can keep up with the pilot commands.
+    % In a physical instance we should change the wn of the reference model
+    % to something slower so the physical actuators can keep up with it
 
     % Force and moment contributions per propeller input
     Fx_u = FM_u(1, propIdx);
@@ -52,8 +56,6 @@ function [G, v, uMin, uMax, duMin, duMax, Wv, Wu, u_d, du_d] = INDI_control(FM_u
     zero_block = zeros(size(MCA_prop_F, 1), size(MCA_aero_M, 2));
 
     % MCA matrix
-    % G = [eta * MCA_prop_M, (1 - eta) * MCA_aero_M;
-    %      MCA_prop_F,       zero_block];
     G = [MCA_prop_M, MCA_aero_M;
          MCA_prop_F,       zero_block];
     G(isnan(G)) = 0;
@@ -79,27 +81,15 @@ function [G, v, uMin, uMax, duMin, duMax, Wv, Wu, u_d, du_d] = INDI_control(FM_u
 
     if eta == 0 % Forward flight
         Wv    = diag([1, 1, 1, 1, 1]);
-        % duMin = duMin .* [zeros(8, 1); ones(5, 1)]; 
-        % duMax = duMax .* [zeros(8, 1); ones(5, 1)]; 
-        % uMin = uMin .* [zeros(8, 1); ones(5, 1)]; 
-        % uMax = uMax .* [zeros(8, 1); ones(5, 1)]; 
-        % u_d   = u_d .* [zeros(8, 1); ones(5, 1)];
-
-        % om_prop_min = [zeros(8, 1); 1].*om_prop_lo;
         % om_prop_max = [zeros(8, 1); 1].*om_prop_hi;
     elseif eta == 1 % Hover
         Wv    = diag([1000, 1000, 1, 100, 100]);
-        % duMin = duMin .* [ones(8, 1); zeros(5, 1)]; 
-        % duMax = duMax .* [ones(8, 1); zeros(5, 1)]; 
-        % uMin = uMin .* [ones(8, 1); zeros(5, 1)]; 
-        % uMax = uMax .* [ones(8, 1); zeros(5, 1)]; 
-        % u_d   = u_d .* [ones(8, 1); zeros(5, 1)];
         surf_min = 0.*surf_lo;
         surf_max = 0.*surf_hi;
     else % Transition
         Wv    = diag([1000, 1000, 100, 100, 100]);
-        surf_min = (1 - eta).*surf_lo;
-        surf_max = (1 - eta).*surf_hi;
+        % surf_min = (1 - eta).*surf_lo;
+        % surf_max = (1 - eta).*surf_hi;
     end
 
     duMin = [max(om_prop_min - om_prop_curr,-ompdot_max*dt); max(surf_min - delta_curr, -deldot_max*dt)];
@@ -109,5 +99,9 @@ function [G, v, uMin, uMax, duMin, duMax, Wv, Wu, u_d, du_d] = INDI_control(FM_u
 
     Wu = diag(1 ./ (uMax - uMin));
     Wu(isnan(Wu) | isinf(Wu)) = 0;
+    Wu(1:8,1:8) = Wu(1:8,1:8) * 50;   % punish vertical props 50x more
+    Wu(9,9)    = Wu(9,9) / 10;        % let pusher move more easily
+    Wu(10:end,10:end) = Wu(10:end,10:end) * 0.5;
+    
     du_d = u_d - u_curr;      % "incremental" desired (INDI)
 end

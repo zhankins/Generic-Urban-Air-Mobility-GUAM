@@ -4,7 +4,7 @@ function [u, W, iter] = activeSetWLS(G, v, uMin, uMax, Wv, Wu, ud)
 % Working set syntax: W_i = -1 if u_i = uMin_i
 %                           +1 if u_i = uMax_i
 
-    gam = 1e6;
+    gam = 1e4;
     iterMax = 50;
 
     n = length(uMin);
