@@ -1,12 +1,12 @@
-%close all; % Close open figures..
+clc; close all; % Close open figures..
 
 % using optimization to solve for trim conditions with constraints
-tiltwing = build_Lift_plus_Cruise();
+tiltwing = build_Lift_plus_Cruise(userStruct.variants.scaling);
 tiltwing.om_p = [0 0 0 0 0 0 0 0 0];
 
 % *************************************************************************
 global POLY
-POLY = 1; % Denotes to use poly database
+POLY = 0; % Denotes to use poly database
 blending_method = 2; % Polynomial blending method 
 % ************ BLENDING METHOD MUST MATCH WHAT IS USED IN SIM!!! **********
 
@@ -16,11 +16,17 @@ kts2ft = (SimIn.Units.nmile/SimIn.Units.ft/3600); % Obtained from setUnits,  Con
 a = 1125.33; % Speed of sound ft/sec
 
 % *************************************************************************
+scriptFullPath = mfilename('fullpath');  
+scriptDir      = fileparts(scriptFullPath);
+if isempty(scriptDir)
+    scriptDir = pwd;
+end
 % out_path        = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\vehicles\Lift+Cruise\Trim\Trim_Figs\Trim_Ver2p0'; % Trim_Ver1p0
 %out_path        = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\vehicles\Lift+Cruise\Trim\Trim_Figs\Trim_Ver2p0'; % Trim_Ver2p0
 %out_path        = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\vehicles\Lift+Cruise\Trim\Trim_Figs\Trim_Ver3p0'; % Trim_Ver3p0
-out_path        = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\vehicles\Lift+Cruise\Trim\Trim_Figs\Trim_Ver4p0'; % Trim_Ver3p0
-save_flag       = 0;
+% out_path        = 'C:\Users\macheson\Desktop\TTT_AS_Git\GTM-GUAM-simulation\vehicles\Lift+Cruise\Trim\Trim_Figs\Trim_Ver4p0'; % Trim_Ver3p0
+out_path = scriptDir;
+save_flag       = 1;
 
 % Specifies the trim case to run...
 % *************************************************************************
@@ -28,15 +34,15 @@ save_flag       = 0;
 %UH = [0:5:130]*kts2ft; % Trim_Ver2p0 
 %UH = [0:5:90 94.8 94.9 100:5:130]*kts2ft; %Trim_Ver3p0x
 %UH = [0:5:90 94.8 95 100:5:130]*kts2ft; %Trim_Ver3p0x
-UH = [0:5:90 94.8 95 100:5:130]*kts2ft; % Trim_Ver4p0 
+UH = [0:5:90 94.8 95 100:5:130]*kts2ft; % Trim_Ver4p0
 
-WH = 700/60; % 'Trim_Designs_Long_Descend';
-R = [inf]; % R = [2500 5000 inf];
-case_name       = 'Trim_Designs_Long_descend'; 
+WH = 0; % 'Trim_Designs_Long_Descend';
+R = inf; % R = [2500 5000 inf];
+case_name       = 'Trim_Designs_Long'; 
 % trim_des_num  = 6.1; % Trim_Ver1p0 
 % trim_des_num  = 6.2; % Trim_Ver2p0 
 % trim_des_num    = 6.3; % Trim_Ver3p0 
-trim_des_num    = 6.4; % Trim_Ver4p0 
+trim_des_num    = 7; % Trim_Ver4p0 
 % *************************************************************************
 
 % *************************************************************************
@@ -93,10 +99,10 @@ trim_des_num    = 6.4; % Trim_Ver4p0
 % trim_des_num    = 1; % 'Trim_Designs_Long';
 % *************************************************************************
 
-trans_start     = (50*kts2ft);
+trans_start     = (30*kts2ft);
 % trans_end       = (95*kts2ft); % Trim_Ver2p0
 % trans_end       = (90*kts2ft); %Trim_Ver3p0
-trans_end       = (94.8*kts2ft); %Trim_Ver4p0
+trans_end       = (90*kts2ft); %Trim_Ver4p0
 
 max_evals       = 5000; % Set max fmincon function evals
 max_iterations  = 500; % Set max fmincon iterations
@@ -248,9 +254,9 @@ for ii = 1:length(R)
       end
 
 % [cost, g] = mycost(x, X0, FreeVar, Q, offset_x0, scale, gang_vec)
-[c, ceq]= nlinCon_helix(x,[TRIM_POINT X0(~FreeVar)'],LPC,GRAV,RHO,Ns,Np,FreeVar, gang_vec, kts2ft, a, blending_method)
+% [c, ceq]= nlinCon_helix(x,[TRIM_POINT X0(~FreeVar)'],LPC,GRAV,RHO,Ns,Np,FreeVar, gang_vec, kts2ft, a, blending_method);
 
-output_store{count} = output;
+% output_store{count} = output;
       % update the current equilibrium vector
       xeq = X0;
       xeq(FreeVar) = x;
@@ -367,7 +373,7 @@ output_store{count} = output;
     
     % Save the results if flagged to do so...
     if save_flag
-        Multi_Fig_Save_func(out_path, 1.4, 1.4,'.fig','.png');
+        % Multi_Fig_Save_func(out_path, 1.4, 1.4,'.fig','.png');
         save(fullfile(out_path, sprintf('Trim_Case_%0.3g_R%0.3g_WH%0.3g_XEQ.mat', trim_des_num, R(ii), WH(kk))), "XEQ","XEQ_All","UH", "WH", "R",...
             "trans_start", "trans_end", "FreeVar_hover","offset_x0_hover","scale_hover", "gang_hover", ...
             "FreeVar_trans", "offset_x0_trans", "scale_trans", "gang_trans", ...

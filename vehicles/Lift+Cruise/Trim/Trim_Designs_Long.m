@@ -666,6 +666,51 @@ end
         gang_cruise            = zeros(18,1);
         % Set the costs (quadratic) for the mycost function
         Q_cruise = diag([q_theta q_phi q_p q_q q_r q_del_f q_del_a q_del_e q_del_r q_om_l q_om_t q_om_p]);
+
+    case 7
+        % **************************** Hover (Case 7) ******************************
+        % Set hover initial conditions
+        %   theta   phi   p  q  r  flap  aileron  elevator  rudder  lead rotors  trail rotors  pusher
+        X0_hover = [-2*pi/180; 0; 0; 0; 0; -25*pi/180; 0; 0; 0; repmat(90,4,1); repmat(90,4,1); 0];
+
+        % Flags for free variables
+        FreeVar_hover = boolean([1 1 0 0 0 1 1 1 1 [1 0 1 0] [1 0 1 0] 1]);
+
+        % Offset vector for cost
+        offset_x0_hover = zeros(18,1);
+        offset_x0_hover(1) = UH(jj)/trans_start * 6*pi/180;
+        offset_x0_hover(6) = (1 - UH(jj)/trans_start) * -25*pi/180;
+        % Nominal rotor speeds placeholder
+        offset_x0_hover(10:17) = 90;
+
+        % Normalized scaling factors
+        scale_hover = ([180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi ones(1,9)]' ./ (UB - LB)');
+        gang_hover  = [zeros(9,1); ones(2,1); 2*ones(2,1); 3*ones(2,1); 4*ones(2,1); 0];
+
+        % Cost weights
+        Q_hover = diag([q_theta q_phi q_p q_q q_r q_del_f q_del_a q_del_e q_del_r q_om_l q_om_t q_om_p]);
+
+        % **************************** Transition (Case 7) *************************
+        X0_trans = [6*pi/180; 0; 0; 0; 0; 0; 0; 0; 0; repmat(35,4,1); repmat(35,4,1); 105];
+        FreeVar_trans = boolean([1 0 0 0 0 0 1 1 1 [1 0 1 0] [1 0 1 0] 1]);
+        offset_x0_trans = zeros(18,1);
+        offset_x0_trans(1) = 6*pi/180 + UH(jj)/trans_end * 1.8*pi/180;
+        % Adjust rotor schedule near transition end
+        if UH(jj) > (trans_end - 10)
+            offset_x0_trans(10:17) = 60 * (trans_end - UH(jj)) / 10;
+        end
+        scale_trans = ([180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi ones(1,9)]' ./ (UB - LB)');
+        gang_trans = [zeros(9,1); ones(2,1); 2*ones(2,1); 3*ones(2,1); 4*ones(2,1); 0];
+        Q_trans = diag([q_theta q_phi q_p q_q q_r q_del_f q_del_a q_del_e q_del_r q_om_l q_om_t q_om_p]);
+
+        % **************************** Cruise (Case 7) ***************************
+        X0_cruise = [8*pi/180; 0; 0; 0; 0; 0; 0; 0; 0; zeros(4,1); zeros(4,1); 150];
+        FreeVar_cruise = boolean([1 1 0 0 0 0 1 1 1 [0 0 0 0] [0 0 0 0] 1]);
+        offset_x0_cruise = zeros(18,1);
+        scale_cruise = ([180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi 180/pi ones(1,9)]' ./ (UB - LB)');
+        gang_cruise = zeros(18,1);
+        Q_cruise = diag([q_theta q_phi q_p q_q q_r q_del_f q_del_a q_del_e q_del_r q_om_l q_om_t q_om_p]);
+
     otherwise
         disp('The trim design number specified does not correspond to a design specified!  Error....')
         error;

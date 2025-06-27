@@ -11,7 +11,16 @@ refInputs = SimIn.RefInputs;
 
 % load the trim conditions for the aircraft
 if SimIn.fmType == ForceMomentEnum.SFunction
-    Out.trim = load('trim_table.mat');
+    % Out.trim = load('trim_table.mat');
+
+    if isfield(SimIn, 'trimFile') && ~isempty(SimIn.trimFile)
+        trimFile = SimIn.trimFile;
+    else
+        trimFile = 'trim_table.mat';
+    end
+
+    Out.trim = load(trimFile);
+
 elseif SimIn.fmType == ForceMomentEnum.Polynomial
     % Out.trim = load('trim_table_poly.mat'); % Ben's original file
     Out.trim = load('trim_table_Poly_ConcatVer4p0.mat'); %Trim_ver3p0
