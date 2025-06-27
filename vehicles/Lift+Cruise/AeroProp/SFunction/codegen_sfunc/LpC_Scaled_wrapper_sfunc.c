@@ -10,7 +10,7 @@
  * (i.e. replace sfuntmpl_basic with the name of your S-function).
  */
 
-#define S_FUNCTION_NAME  LpC_Edison
+#define S_FUNCTION_NAME  LpC_Scaled_wrapper_sfunc
 #define S_FUNCTION_LEVEL 2
 
 /* Define the number of s-function inputs and outputs, size of B  */
