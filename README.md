@@ -1,4 +1,5 @@
-# Generic UAM Simulation - NASA TTT-Autonomous Systems(AS): Intelligent Contingency Management (ICM) 
+# Generic UAM Simulation - NASA TTT-Autonomous Systems(AS): Intelligent Contingency Management (ICM)
+A MATLAB/Simulink framework that models a NASA Lift + Cruise VTOL.
 ## Point of Contact:
 **Michael J. Acheson**  
 NASA Langley Research Center (LaRC)  
@@ -13,9 +14,15 @@ email: michael.j.acheson@nasa.gov
 - Includes piece-wise Bezier RefInput reference trajectory capability, and a simulation output animation script (`./utilities/Animate_SimOut.m`).
 - Enables a user-defined output script that allows users to specify output variables (e.g., `./vehicles/Lift+Cruise/setup/User_SimOut/mySimOutFunc_Animate.m`).
 
-## How to Run
-### Simulation Example
-To run a simulation example case, execute the `RUNME.m` script at the top level!
+## Quick Start
+```matlab
+% From repository root:
+>> RUNME           % launches default demo & opens GUAM model
+```
+Simulation output is logged to `logsout{1}` and can be mapped to a structure:
+```matlab
+>> SimOut = logsout{1}.Values;
+```
 
 ## About the Simulation
 
@@ -69,3 +76,20 @@ The (**offline**) trim routines are found in the `./vehicles/Lift+Cruise/Trim` f
 ### Baseline Controller Gain Scheduling
 The gain scheduling m-files are contained in the `./vehicles/Lift+Cruise/control/` folder. The top-level script for gain scheduling the baseline controller (LSQi) is `ctrl_scheduler_GUAM.m`. This script schedules the Longitudinal and Lateral axes separately. A few linearization scripts are available but the main script is `get_lin_dynamics_heading.m`. This script linearizes around a designated flight condition, and other scripts (e.g., `get_lat_dynamics_heading.m` and `ctrl_lat.m`) segregate the linearized dynamics according to desired axes.
 For more detailed information, please refer to the [Controller Documentation](Documentation/Controller.md).
+
+## Failure Configuration
+Inject surface jams, engine cut-outs, sensor biases and more using the failure API described in [Failures Documentation](Documentation/Failures.md).
+
+## Further Reading
+
+| Area                       | Markdown                                                         |
+| -------------------------- | ---------------------------------------------------------------- |
+| Personalisation guide      | [Documentation/Personalize.md](Documentation/Personalize.md)     |
+| Controller theory & tables | [Documentation/Controller.md](Documentation/Controller.md)       |
+| Failure-injection API      | [Documentation/Failures.md](Documentation/Failures.md)           |
+| Linearisation process      | [Documentation/Linearization.md](Documentation/Linearization.md) |
+| S-Function build           | [Documentation/SFunction.md](Documentation/SFunction.md)         |
+| Vehicle scaling            | [Documentation/Scaling.md](Documentation/Scaling.md)             |
+| Trim file creation         | [Documentation/Trim.md](Documentation/Trim.md)                   |
+| Frames & symbols           | [Documentation/RefFrames.md](Documentation/RefFrames.md)         |
+
