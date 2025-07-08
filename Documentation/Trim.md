@@ -1,21 +1,30 @@
 # Trim Files Build & Code Summary
 
 This document provides a concise overview of how to build the trim files for the Lift+Cruise model and a summary of the key code functionality.
+> [!NOTE]
+> We trim because each geometric scale of the vehicle needs a set of trimmed operating points that cover the flight envelope from **hover --> transition --> cruise**.
+
+## About `Trim_Case_7_Scale_x.m`
+
+[Trim_Case_7_Scale_x.m](vehicles/Lift+Cruise/Trim/Trim_Case_7_Scale_x.m) is a script derived from NASA’s original `trim_helix` and `ctrl_scheduler_GUAM` codes.
+It shows how to compute trim points for **one vertical speed** (WH) across a **range of forward velocities (UH)** in all three regimes (hover, transition, and cruise). This code removes plotting, printing, and other non-essential lines, making it quick to run whenever you update the VTOL’s scale and need a fresh trim table for the **incremental NDI controller**.
 
 ## How to Run the Trim Code
 
 1. **Build the Aircraft Model & Compile the SFunction:**
    - Navigate to `\vehicles\Lift+Cruise`.
-   - Open **build_Lift_plus_Cruise**.
-   - Set the desired scaling factor.
-   - Run the following command in the MATLAB command window:
-     ```matlab
-     mex_LpC_sfunc(false);
-     ```
+      ```matlab
+      % in \vehicles\Lift+Cruise
+      build_Lift_plus_Cruise(scaleFactor)   % set your scale
+      mex_LpC_sfunc(false)                  % compile once
+      ```
 
 2. **Generate Trim Files:**
    - Navigate to `\vehicles\Lift+Cruise\Trim`.
-   - Open **trim_helix** and set the scaling factor.
+   - Open **trim_helix** and set the scaling factor:
+     ```matlab
+     tiltwing = build_Lift_plus_Cruise(scaleFactor);
+     ```
    - Run **trim_helix** for the three conditions (hover, transition, cruise).
    - Three case files will be output after execution.
 > [!TIP]
@@ -23,7 +32,10 @@ This document provides a concise overview of how to build the trim files for the
 
 3. **Controller Trim Table Generation:**
    - Navigate to `\vehicles\Lift+Cruise\Control`.
-   - Open **ctrl_scheduler_GUAM**.
+   - Open **ctrl_scheduler_GUAM** and set the scaling factor:
+     ```matlab
+     lpc = build_Lift_plus_Cruise(scaleFactor);
+     ```
    - Update the trim case file names as needed.
    - Run the script to generate two trim tables—use the polynomial trim table for further processing.
 
