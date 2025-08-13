@@ -1,10 +1,4 @@
-%% Save old scale
-try
-    oldscale = userStruct.variants.scaling; % Grab old scale for scale change detection
-catch
-    oldscale = 0;
-end
-clc; close all; clearvars -except oldscale;
+clc; close all; clearvars;
 
 %% Initialize
 addpath('./Exec_Scripts/');
@@ -15,19 +9,14 @@ end
 %% network parameters
 
 simAddress = '127.0.0.1';
-% simAddress = '192.168.1.4';
 simPortInput = 5502; % Port used for the simulator to send data
 simPortOutput = 5501; % Port used for the simulator to receive data
 simIsRemote = ~strcmp(simAddress, '127.0.0.1');
 
-headsetAddress = '127.0.0.1';
-headsetPortHUD = 25000;
-headsetPortTraj = 25001;
-
 %% sim parameters
 model = 'GUAM';
 
-userStruct.variants.scaling = 0.5; % Scaling factor w.r.t the original VTOL
+userStruct.variants.scaling = -1; % Scaling factor w.r.t the original VTOL (-1 is default)
 userStruct.variants.fmType = 1; % 1=SFunction, 2=Polynomial
 userStruct.variants.actType = 4; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
 userStruct.variants.propType = 2; % 1=None, 2=FirstOrder, 3=SecondOrder, 4=FirstOrderFailSurf
@@ -78,15 +67,21 @@ if SimIn.ScalingFactor > 0
     % re-setup the sim
     simSetup;
 
+    % Update trim conditions interpolation to make it compatible with
+    % simulink
+    XU0_single = SimIn.Control.trim.XU0_interp;
+    SimIn.Control.trim.XU0_interp = repmat(XU0_single, 1, 1, 3);
+    baseW = SimIn.Control.trim.WH;
+    SimIn.Control.trim.WH = [baseW-1e-6, baseW, baseW+1e-6];  
+
     % compile the new S-Function
     mex_LpC_sfunc(false);
-    setupSFunction(SimIn,model);
 end
 
+setupSFunction(SimIn,model);
 SimIn.stopTime = 1000;
+open(model);
 
-% % Execute the model
-% sim(model);
 % % Create sample output plots
 % simPlots_GUAM;
 % % Create an animation of the flight
