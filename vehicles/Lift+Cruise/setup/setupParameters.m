@@ -7,6 +7,14 @@ function setupParameters(SimIn)
 %% Define Switches parameters
 SimPar.Switches = SimIn.Switches;
 
+%% Define Scale
+rawScale = SimIn.ScalingFactor;
+if rawScale > 0
+    SimPar.Scale = rawScale;
+else
+    SimPar.Scale = 1;      % no geometric change if –1 or any negative
+end
+
 %% Define Mass Properties parameters
 SimPar.MP.mass = SimIn.Model.mass;
 SimPar.MP.I    = SimIn.Model.I;
