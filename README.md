@@ -65,3 +65,11 @@ Inject surface jams, engine cut-outs, sensor biases and more using the failure A
 | Trim file creation         | [Documentation/Trim.md](Documentation/Trim.md)                   |
 | Frames & symbols           | [Documentation/RefFrames.md](Documentation/RefFrames.md)         |
 
+### Related Publications
+* [VTOL Urban Air Mobility Concept Vehicles for Technology Development](https://arc.aiaa.org/doi/10.2514/6.2018-3847)
+  Introduces NASA's Lift+Cruise concept.
+* [A Strip Theory Approach to Dynamic Modeling of eVTOL Aircraft](https://arc.aiaa.org/doi/10.2514/6.2021-1720)
+  Describes the derivation of a strip theory aerodynamic model.
+* [Full-Envelope Aero-Propulsive Model Identification for Lift+Cruise Aircraft Using Computational Experiments](https://arc.aiaa.org/doi/10.2514/6.2021-3170)
+  Describes the derivation of a polynomial-based aerodynamic model.
+
