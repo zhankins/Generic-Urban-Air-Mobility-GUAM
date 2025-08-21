@@ -20,17 +20,19 @@ Some of the key simulation components include:
 1. A simulation architecture (e.g., signal buses) that supports the most common rigid body 6-DOF frames of reference (e.g., Earth Centered Inertial, Earth Centered Earth Fixed (ECEF), North-East-Down (NED), Navigation, Velocity, Wind, Stability, and Body)
 2. A simulation architecture that contains most aerospace signals/quantities of typical interest
 3. A generic architecture that readily supports swapping in and out aircraft models, sensors, actuator models, control algorithms, etc.
-4. A Incremental Nonlinear Dynamic Inversion (INDI) controller
 
 Simulation input (fixed) parameters are provided in a large structure `SimIn`, whereas desired tunable simulation parameters are provided using the large structure: `SimPar`. The structure `SimIn`, `SimPar`, and `SimOut` therefore contain the (fixed) simulation inputs, the (variable) simulation inputs, and the simulation outputs respectively. Some basic results plotting can be performed by running the m-file: `./vehicles/Lift+Cruise/Utils/simPlots_GUAM.m`. Simulation results animation (e.g., creation of a .avi file or similar) is available by use of the script: `./utilities/Animate_SimOut.m`.
 
-### Simulation Modifications
+### Simulation Modifications by ADCL ERAU
 
 This simulation was originally forked from NASA's model. Several modifications were introduced:
 
-- **Controller Replacement:** The default baseline controller was replaced with an Incremental Nonlinear Dynamic Inversion (INDI) controller.
+- **Controller Replacement:** The default baseline controller was replaced with an Incremental Nonlinear Dynamic Inversion (INDI) controller, following the architecture proposed by Lombaerts et al. and implemented in our work:
+  * [Lombaerts et al., AIAA 2020-1619](https://arc.aiaa.org/doi/10.2514/6.2020-1619)
+  * [ADCL ERAU Implementation, AIAA 2025-3489](https://arc.aiaa.org/doi/10.2514/6.2025-3489)
 - **Remote Control & Visualization Blocks:** Simulink blocks were added to allow remote control inputs and visualization of the vehicle state.  
-- **VTOL Scaling Script:** A dedicated script was created to scale the VTOL model based on Froude Scaling and Similitude principles.  
+- **VTOL Scaling Script:** A dedicated script was created to scale the VTOL model based on Froude Scaling and Similitude principles. The method follows:
+  * [Wolowicz, C.; Bowman, J.; Gilbert, W. – NASA TP-1534 (1979)](https://ntrs.nasa.gov/api/citations/19790022005/downloads/19790022005.pdf)  
 - **Trim Script for Scaled VTOL:** An additional script was implemented to compute trim states for the scaled vehicle configurations. 
 
 ### Personalization

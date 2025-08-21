@@ -1,5 +1,39 @@
 # Controller and Linearization
-## NASA's Baseline Controller
+## INDI-Based Flight Control (Current Controller)
+The current controller implemented in this simulation is based on the **Incremental Nonlinear Dynamic Inversion (INDI)** framework, as described in:
+
+* [AIAA 2025-3489](https://arc.aiaa.org/doi/10.2514/6.2025-3489) – **ADCL Implementation**
+* [AIAA 2020-1619](https://arc.aiaa.org/doi/10.2514/6.2020-1619) – **Original concept by Lombaerts et al.**
+
+### Overview
+
+INDI was selected due to its:
+
+* **Computational efficiency**
+* **Robustness to partial model knowledge**
+* **Ability to handle actuator saturation**
+
+Rather than requiring a full model of the aircraft, INDI relies on a control effectiveness matrix, making it ideal for complex and dynamic VTOL systems.
+
+### Control Allocation
+
+To avoid undesired saturation, a prioritized control allocation scheme is used:
+
+* Implemented using a Weighted Least Squares (WLS) framework with an active-set algorithm
+* Control priority:
+
+  1. Roll and pitch moments
+  2. Vertical force
+  3. Yaw moment
+
+### Control Architecture
+
+* **Outer-loop controllers**: Generate required angular and translational accelerations
+* **Inner-loop INDI controller**: Uses angular rates and accelerations to compute actuator commands
+
+---
+
+## NASA's Baseline Controller (Archived)
 The baseline controller is designed to manage control inputs and state feedback for stable flight operations. The key matrices used for this purpose are:
 - **Ki, Kx, Kv, F, C**: Matrices used for control and state feedback, calculated using interpolation or extrapolation based on control frame velocities `u` and `w`.
 	- **Kv** for longitudinal control is **K_theta**
