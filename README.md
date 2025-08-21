@@ -24,6 +24,15 @@ Some of the key simulation components include:
 
 Simulation input (fixed) parameters are provided in a large structure `SimIn`, whereas desired tunable simulation parameters are provided using the large structure: `SimPar`. The structure `SimIn`, `SimPar`, and `SimOut` therefore contain the (fixed) simulation inputs, the (variable) simulation inputs, and the simulation outputs respectively. Some basic results plotting can be performed by running the m-file: `./vehicles/Lift+Cruise/Utils/simPlots_GUAM.m`. Simulation results animation (e.g., creation of a .avi file or similar) is available by use of the script: `./utilities/Animate_SimOut.m`.
 
+### Simulation Modifications
+
+This simulation was originally forked from NASA's model. Several modifications were introduced:
+
+- **Controller Replacement:** The default baseline controller was replaced with an Incremental Nonlinear Dynamic Inversion (INDI) controller.
+- **Remote Control & Visualization Blocks:** Simulink blocks were added to allow remote control inputs and visualization of the vehicle state.  
+- **VTOL Scaling Script:** A dedicated script was created to scale the VTOL model based on Froude Scaling and Similitude principles.  
+- **Trim Script for Scaled VTOL:** An additional script was implemented to compute trim states for the scaled vehicle configurations. 
+
 ### Personalization
 While demonstration scripts are provided, users can customize various subsystems through the `userStruct` structure and `simSetup.m` script. `userStruct` allows setting different subsystem variants and switches to tailor simulations to specific needs. Key configuration options include actuator type, atmosphere model, trajectory input, and more.
 
