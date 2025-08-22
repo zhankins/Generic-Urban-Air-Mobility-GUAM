@@ -6,6 +6,22 @@ A MATLAB/Simulink framework that models a NASA Lift + Cruise VTOL.
 % From repository root:
 >> main           % launches default config params & opens GUAM model
 ```
+
+### S-Function Error
+When running `RUNME.m`, I am receiving the following error.
+```matlab
+Error using RUNME (line 26)
+Error in S-function 'GUAM/Vehicle Simulation/Vehicle Model/Propulsion and
+Aerodynamic Forces and Moments/Propulsion and Aerodynamic Forces and
+Moments/S-Function/Lift+Cruise Forces//Moments': S-Function 'LpC_wrapper_sfunc'
+does not exist
+```
+I am trying the following steps to correct:
+[Compile S-Function Model](./Documentation/Sfunction.md)
+```matlab
+mex_LpC_sfunc(false);
+```
+### Continue Quick Start
 Simulation output is logged to `logsout{1}` and can be mapped to a structure:
 ```matlab
 >> SimOut = logsout{1}.Values;
