@@ -33,6 +33,56 @@ This command sets up the necessary include paths and links to the static library
 ### Alternate steps for MacOS Apple Silicon
 
 ### S-Function Error
+My initial thought when opening the repo was to run RUNME.m (seems like the obvious choice). If you do so, you get the following output and error:
+```matlab
+>> RUNME
+Specify the desired example case to run:
+	(1) Sinusoidal Timeseries
+	(2) Hover to Transition Timeseries
+	(3) Cruise Climbing Turn Timeseries
+	(4) Ramp demo
+	(5) Piecewise Bezier Trajectory
+User Input: 1
+Default path setup
+userStruct exists
+userStruct.variants exists
+userStruct.switches does not exist
+
+---------------------------------------
+Switch setup:
+Lift+Cruise polynomial aerodynamic model: v2.1-MOF
+Variant setup
+Bus setup
+Error using RUNME (line 26)
+Variant control 'simIsRemote == 1' used by block 'GUAM/Vehicle Simulation/ADCL
+Vehicle Control/Variant Subsystem' must return a logical value.
+Caused by:
+    Error using RUNME (line 26)
+    Unrecognized function or variable 'simIsRemote'.
+        Error using RUNME (line 26)
+        Variable 'simIsRemote' does not exist.
+        Suggested Actions:
+            • Load a file into base workspace. - Fix
+            • Create a new variable. - Fix
+```
+in addition to the above output, the `GUAM.slx` file is opened to the S-Function sub-block, and everything is greyed out.
+
+When going to a terminal window and running `git status`, we see that we have the following new files:
+```
+Exec_Scripts/exam_PW_Bezier_traj.mat
+GUAM.slx.r2024a
+vehicles/Lift+Cruise/obj/LpC_Scaled_wrapper_sfunc.mexmaca64
+vehicles/Lift+Cruise/obj/mac
+```
+We also see that `GUAM.slx` was modified, even though we didn't make any changes to the files ourselves.
+
+After reviewing the instructions, it appears that it is intended to run `main.m` first. So, we will reset our folders and start from scratch.
+
+When you run that and THEN subsequently `RUNME.m`, you get the following:
+
+
+
+
 When running `RUNME.m`, I am receiving the following error.
 ```matlab
 Error using RUNME (line 26)
